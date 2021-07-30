@@ -1,6 +1,6 @@
+import { users } from './database';
+import { createUserAlreadyExistsError } from './error';
 import { BankingError, Ok } from './types';
-
-const users: string[] = [];
 
 /**
  * Creates a new user
@@ -8,12 +8,10 @@ const users: string[] = [];
  * @returns Ok if it succeeds or a BankingError if not
  */
 export const createUser = (username: string): Ok | BankingError => {
-  console.log(username);
   if (users.find(element => element === username)) {
-    return {
-      name: 'UserAlreadyExists',
-      message: `The user with username ${username} already exist`,
-    };
+    return createUserAlreadyExistsError(
+      `The user with username ${username} already exist`
+    );
   }
   users.push(username);
   return { success: true };

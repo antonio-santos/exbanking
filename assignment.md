@@ -34,7 +34,7 @@ type Ok = { success: true };
 ```typescript
 const createUser = (username: string): Ok | BankingError => {};
 ```
-- [ ] Function creates new user in the system
+- [x] Function creates new user in the system
 - [ ] New user has zero balance of any currency
 
 ```typescript
