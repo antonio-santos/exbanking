@@ -52,7 +52,7 @@ const withdraw = (username: string, amount: number, currency: string): (Ok & { n
 ```typescript
 const getBalance = (username: string, currency: string): (Ok & { balance: number } | BankingError) => {};
 ```
-- [ ] Returns balance of the user in given format
+- [x] Returns balance of the user in given format
 
 ```typescript
 const send = (fromUsername: string, toUsername: string, amount: number, currency: string): (Ok & { fromUsernameBalance: number, toUsernameBalance: number } | BankingError) => {};

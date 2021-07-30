@@ -1,4 +1,4 @@
-import { createUser, deposit, withdraw } from '../src';
+import { createUser, deposit, getBalance, withdraw } from '../src';
 import { resetDatabase } from '../src/database';
 import { ErrorName } from '../src/error';
 import {
@@ -100,6 +100,35 @@ describe('exbanking', () => {
         newBalance: 0,
       };
       expect(actual).toEqual<Ok & { newBalance: number }>(expected);
+    });
+  });
+  describe('METHOD: getBalance', () => {
+    it('should return UserDoesNotExist', () => {
+      const actual = getBalance('antonio', 'USD');
+      const expected: UserDoesNotExist = {
+        name: ErrorName.UserDoesNotExist,
+        message: 'The user with username antonio does not exist',
+      };
+      expect(actual).toEqual<UserDoesNotExist>(expected);
+    });
+    it('should return the balance of 0', () => {
+      createUser('antonio');
+      const actual = getBalance('antonio', 'USD');
+      const expected: Ok & { balance: number } = {
+        success: true,
+        balance: 0,
+      };
+      expect(actual).toEqual<Ok & { balance: number }>(expected);
+    });
+    it('should return the balance of the user', () => {
+      createUser('antonio');
+      deposit('antonio', 50, 'USD');
+      const actual = getBalance('antonio', 'USD');
+      const expected: Ok & { balance: number } = {
+        success: true,
+        balance: 50,
+      };
+      expect(actual).toEqual<Ok & { balance: number }>(expected);
     });
   });
 });

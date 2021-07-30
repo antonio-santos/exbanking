@@ -9,10 +9,10 @@ export enum ErrorName {
   ReceiverDoesNotExist,
 }
 
-export const userAlreadyExistsError = (message?: string): UserAlreadyExists => {
+export const userAlreadyExistsError = (message: string): UserAlreadyExists => {
   return {
     name: ErrorName.UserAlreadyExists,
-    message: message || 'The user already exist',
+    message: message,
   } as UserAlreadyExists;
 };
 

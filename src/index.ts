@@ -1,4 +1,4 @@
-import { Balance, getBalance, getUser, User, users } from './database';
+import { Balance, getUserBalance, getUser, User, users } from './database';
 import {
   notEnoughMoneyError,
   userAlreadyExistsError,
@@ -35,7 +35,7 @@ export const deposit = (
 ): (Ok & { newBalance: number }) | BankingError => {
   const user = getUser(username);
   if (user) {
-    const balance = getBalance(user, currency);
+    const balance = getUserBalance(user, currency);
     if (balance) {
       balance.amount += amount;
       return { success: true, newBalance: balance.amount };
@@ -64,7 +64,7 @@ export const withdraw = (
 ): (Ok & { newBalance: number }) | BankingError => {
   const user = getUser(username);
   if (user) {
-    const balance = getBalance(user, currency);
+    const balance = getUserBalance(user, currency);
     if (balance && balance.amount >= amount) {
       balance.amount -= amount;
       return { success: true, newBalance: balance.amount };
@@ -80,18 +80,30 @@ export const withdraw = (
   }
 };
 
-// /**
-//  * Get the balance of a specific currency from a user
-//  * @param username The username of the user we want to get the balance
-//  * @param currency The currency of the balance we want to get
-//  * @returns Ok and the balance if it succeeds or a BankingError if not
-//  */
-// const getBalance = (
-//   username: string,
-//   currency: string
-// ): (Ok & { balance: number }) | BankingError => {
-//   throw new Error('Method not implemented.');
-// };
+/**
+ * Get the balance of a specific currency from a user
+ * @param username The username of the user we want to get the balance
+ * @param currency The currency of the balance we want to get
+ * @returns Ok and the balance if it succeeds or a BankingError if not
+ */
+export const getBalance = (
+  username: string,
+  currency: string
+): (Ok & { balance: number }) | BankingError => {
+  const user = getUser(username);
+  if (user) {
+    const balance = getUserBalance(user, currency);
+    if (balance) {
+      return { success: true, balance: balance.amount };
+    } else {
+      return { success: true, balance: 0 };
+    }
+  } else {
+    return userDoesNotExistError(
+      `The user with username ${username} does not exist`
+    );
+  }
+};
 
 // /**
 //  * Send an amount of a specific currency from a user to another

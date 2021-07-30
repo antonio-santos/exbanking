@@ -28,7 +28,7 @@ export const getUser = (username: string): User | undefined => {
   }
 };
 
-export const getBalance = (
+export const getUserBalance = (
   user: User,
   currency: string
 ): Balance | undefined => {
