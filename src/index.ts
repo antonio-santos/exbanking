@@ -1,5 +1,5 @@
-import { User, users } from './database';
-import { createUserAlreadyExistsError } from './error';
+import { Balance, getBalance, getUser, User, users } from './database';
+import { userAlreadyExistsError, userDoesNotExistError } from './error';
 import { BankingError, Ok } from './types';
 
 /**
@@ -8,8 +8,8 @@ import { BankingError, Ok } from './types';
  * @returns Ok if it succeeds or a BankingError if not
  */
 export const createUser = (username: string): Ok | BankingError => {
-  if (users.find(element => element.username === username)) {
-    return createUserAlreadyExistsError(
+  if (getUser(username)) {
+    return userAlreadyExistsError(
       `The user with username ${username} already exist`
     );
   }
@@ -17,20 +17,36 @@ export const createUser = (username: string): Ok | BankingError => {
   return { success: true };
 };
 
-// /**
-//  * Deposits a specific amount into a specific user's balance
-//  * @param username The username of the user we want to do a deposit
-//  * @param amount The amount we want to deposit
-//  * @param currency The respective currency of the amount
-//  * @returns Ok and the newBalance if it succeeds or a BankingError if not
-//  */
-// const deposit = (
-//   username: string,
-//   amount: number,
-//   currency: string
-// ): (Ok & { newBalance: number }) | BankingError => {
-//   throw new Error('Method not implemented.');
-// };
+/**
+ * Deposits a specific amount into a specific user's balance
+ * @param username The username of the user we want to do a deposit
+ * @param amount The amount we want to deposit
+ * @param currency The respective currency of the amount
+ * @returns Ok and the newBalance if it succeeds or a BankingError if not
+ */
+export const deposit = (
+  username: string,
+  amount: number,
+  currency: string
+): (Ok & { newBalance: number }) | BankingError => {
+  const user = getUser(username);
+  if (user) {
+    const balances = getBalance(user, currency);
+    if (balances) {
+      balances.amount += amount;
+      console.log(balances);
+      return { success: true, newBalance: balances.amount };
+    } else {
+      user.balances.push(new Balance(currency, amount));
+      console.log(user.balances);
+      return { success: true, newBalance: amount };
+    }
+  } else {
+    return userDoesNotExistError(
+      `The user with username ${username} does not exist`
+    );
+  }
+};
 
 // /**
 //  * Withdraws a specific amount from a specific user's balance
@@ -39,7 +55,7 @@ export const createUser = (username: string): Ok | BankingError => {
 //  * @param currency The respective currency of the amount
 //  * @returns Ok and the newBalance if it succeeds or a BankingError if not
 //  */
-// const withdraw = (
+// export const withdraw = (
 //   username: string,
 //   amount: number,
 //   currency: string

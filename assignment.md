@@ -40,8 +40,8 @@ const createUser = (username: string): Ok | BankingError => {};
 ```typescript
 const deposit = (username: string, amount: number, currency: string): (Ok & { newBalance: number } | BankingError) => {};
 ```
-- [ ] Increases user's balance in given currency by amount value
-- [ ] Returns newBalance of the user in given format
+- [x] Increases user's balance in given currency by amount value
+- [x] Returns newBalance of the user in given format
 
 ```typescript
 const withdraw = (username: string, amount: number, currency: string): (Ok & { newBalance: number } | BankingError) => {};
