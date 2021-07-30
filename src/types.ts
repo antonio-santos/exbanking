@@ -5,7 +5,7 @@ type NotEnoughMoney = {};
 type SenderDoesNotExist = {};
 type ReceiverDoesNotExist = {};
 
-type BankingError =
+export type BankingError =
   | Error
   | WrongArguments
   | UserAlreadyExists
@@ -14,5 +14,5 @@ type BankingError =
   | SenderDoesNotExist
   | ReceiverDoesNotExist;
 
-type Ok = { success: true };
+export type Ok = { success: true };
 
