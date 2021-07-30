@@ -46,8 +46,8 @@ const deposit = (username: string, amount: number, currency: string): (Ok & { ne
 ```typescript
 const withdraw = (username: string, amount: number, currency: string): (Ok & { newBalance: number } | BankingError) => {};
 ```
-- [ ] Decreases user's balance in given currency by amount value
-- [ ] Returns new_balance of the user in given format
+- [x] Decreases user's balance in given currency by amount value
+- [x] Returns new_balance of the user in given format
 
 ```typescript
 const getBalance = (username: string, currency: string): (Ok & { balance: number } | BankingError) => {};

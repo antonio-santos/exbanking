@@ -1,5 +1,9 @@
 import { Balance, getBalance, getUser, User, users } from './database';
-import { userAlreadyExistsError, userDoesNotExistError } from './error';
+import {
+  notEnoughMoneyError,
+  userAlreadyExistsError,
+  userDoesNotExistError,
+} from './error';
 import { BankingError, Ok } from './types';
 
 /**
@@ -31,14 +35,12 @@ export const deposit = (
 ): (Ok & { newBalance: number }) | BankingError => {
   const user = getUser(username);
   if (user) {
-    const balances = getBalance(user, currency);
-    if (balances) {
-      balances.amount += amount;
-      console.log(balances);
-      return { success: true, newBalance: balances.amount };
+    const balance = getBalance(user, currency);
+    if (balance) {
+      balance.amount += amount;
+      return { success: true, newBalance: balance.amount };
     } else {
       user.balances.push(new Balance(currency, amount));
-      console.log(user.balances);
       return { success: true, newBalance: amount };
     }
   } else {
@@ -48,20 +50,35 @@ export const deposit = (
   }
 };
 
-// /**
-//  * Withdraws a specific amount from a specific user's balance
-//  * @param username The username of the user we want to do a withdraw
-//  * @param amount The amount we want to withdraw
-//  * @param currency The respective currency of the amount
-//  * @returns Ok and the newBalance if it succeeds or a BankingError if not
-//  */
-// export const withdraw = (
-//   username: string,
-//   amount: number,
-//   currency: string
-// ): (Ok & { newBalance: number }) | BankingError => {
-//   throw new Error('Method not implemented.');
-// };
+/**
+ * Withdraws a specific amount from a specific user's balance
+ * @param username The username of the user we want to do a withdraw
+ * @param amount The amount we want to withdraw
+ * @param currency The respective currency of the amount
+ * @returns Ok and the newBalance if it succeeds or a BankingError if not
+ */
+export const withdraw = (
+  username: string,
+  amount: number,
+  currency: string
+): (Ok & { newBalance: number }) | BankingError => {
+  const user = getUser(username);
+  if (user) {
+    const balance = getBalance(user, currency);
+    if (balance && balance.amount >= amount) {
+      balance.amount -= amount;
+      return { success: true, newBalance: balance.amount };
+    } else {
+      return notEnoughMoneyError(
+        `There isn't enough money in the user balance`
+      );
+    }
+  } else {
+    return userDoesNotExistError(
+      `The user with username ${username} does not exist`
+    );
+  }
+};
 
 // /**
 //  * Get the balance of a specific currency from a user

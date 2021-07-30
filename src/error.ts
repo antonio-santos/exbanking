@@ -1,4 +1,4 @@
-import { UserAlreadyExists, UserDoesNotExist } from './types';
+import { NotEnoughMoney, UserAlreadyExists, UserDoesNotExist } from './types';
 
 export enum ErrorName {
   WrongArguments,
@@ -21,4 +21,11 @@ export const userDoesNotExistError = (message: string): UserDoesNotExist => {
     name: ErrorName.UserDoesNotExist,
     message: message,
   } as UserDoesNotExist;
+};
+
+export const notEnoughMoneyError = (message: string): NotEnoughMoney => {
+  return {
+    name: ErrorName.NotEnoughMoney,
+    message: message,
+  } as NotEnoughMoney;
 };
