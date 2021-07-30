@@ -1,4 +1,4 @@
-import { users } from './database';
+import { User, users } from './database';
 import { createUserAlreadyExistsError } from './error';
 import { BankingError, Ok } from './types';
 
@@ -8,12 +8,12 @@ import { BankingError, Ok } from './types';
  * @returns Ok if it succeeds or a BankingError if not
  */
 export const createUser = (username: string): Ok | BankingError => {
-  if (users.find(element => element === username)) {
+  if (users.find(element => element.username === username)) {
     return createUserAlreadyExistsError(
       `The user with username ${username} already exist`
     );
   }
-  users.push(username);
+  users.push(new User(username));
   return { success: true };
 };
 
