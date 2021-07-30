@@ -1,9 +1,11 @@
-import { createUser, deposit, getBalance, withdraw } from '../src';
+import { createUser, deposit, getBalance, send, withdraw } from '../src';
 import { resetDatabase } from '../src/database';
 import { ErrorName } from '../src/error';
 import {
   NotEnoughMoney,
   Ok,
+  ReceiverDoesNotExist,
+  SenderDoesNotExist,
   UserAlreadyExists,
   UserDoesNotExist,
 } from '../src/types';
@@ -129,6 +131,81 @@ describe('exbanking', () => {
         balance: 50,
       };
       expect(actual).toEqual<Ok & { balance: number }>(expected);
+    });
+  });
+  describe('METHOD: send', () => {
+    it('should return SenderDoesNotExist', () => {
+      const actual = send('antonio', 'livia', 50, 'USD');
+      const expected: SenderDoesNotExist = {
+        name: ErrorName.SenderDoesNotExist,
+        message: 'The user with username antonio does not exist',
+      };
+      expect(actual).toEqual<SenderDoesNotExist>(expected);
+    });
+    it('should return ReceiverDoesNotExist', () => {
+      createUser('antonio');
+      const actual = send('antonio', 'livia', 50, 'USD');
+      const expected: ReceiverDoesNotExist = {
+        name: ErrorName.ReceiverDoesNotExist,
+        message: 'The user with username livia does not exist',
+      };
+      expect(actual).toEqual<ReceiverDoesNotExist>(expected);
+    });
+    it('should return NotEnoughMoney for a user with no balance', () => {
+      createUser('antonio');
+      createUser('livia');
+      const actual = send('antonio', 'livia', 50, 'USD');
+      const expected: NotEnoughMoney = {
+        name: ErrorName.NotEnoughMoney,
+        message: `There isn't enough money in the user balance`,
+      };
+      expect(actual).toEqual<NotEnoughMoney>(expected);
+    });
+    it('should return NotEnoughMoney for a user with insuficient funds', () => {
+      createUser('antonio');
+      createUser('livia');
+      deposit('antonio', 10, 'USD');
+      const actual = send('antonio', 'livia', 50, 'USD');
+      const expected: NotEnoughMoney = {
+        name: ErrorName.NotEnoughMoney,
+        message: `There isn't enough money in the user balance`,
+      };
+      expect(actual).toEqual<NotEnoughMoney>(expected);
+    });
+    it('should send 50 USD from antonio to livia, giving a final balance of 0 and 50 respectivly', () => {
+      createUser('antonio');
+      createUser('livia');
+      deposit('antonio', 50, 'USD');
+      const actual = send('antonio', 'livia', 50, 'USD');
+      const expected: Ok & {
+        fromUsernameBalance: number;
+        toUsernameBalance: number;
+      } = {
+        success: true,
+        fromUsernameBalance: 0,
+        toUsernameBalance: 50,
+      };
+      expect(actual).toEqual<
+        Ok & { fromUsernameBalance: number; toUsernameBalance: number }
+      >(expected);
+    });
+    it('should send 50 USD from antonio to livia, giving a final balance of 0 and 100 respectivly', () => {
+      createUser('antonio');
+      createUser('livia');
+      deposit('antonio', 50, 'USD');
+      deposit('livia', 50, 'USD');
+      const actual = send('antonio', 'livia', 50, 'USD');
+      const expected: Ok & {
+        fromUsernameBalance: number;
+        toUsernameBalance: number;
+      } = {
+        success: true,
+        fromUsernameBalance: 0,
+        toUsernameBalance: 100,
+      };
+      expect(actual).toEqual<
+        Ok & { fromUsernameBalance: number; toUsernameBalance: number }
+      >(expected);
     });
   });
 });

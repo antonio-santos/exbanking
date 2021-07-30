@@ -1,6 +1,8 @@
 import { Balance, getUserBalance, getUser, User, users } from './database';
 import {
   notEnoughMoneyError,
+  receiverDoesNotExistError,
+  senderDoesNotExistError,
   userAlreadyExistsError,
   userDoesNotExistError,
 } from './error';
@@ -17,7 +19,7 @@ export const createUser = (username: string): Ok | BankingError => {
       `The user with username ${username} already exist`
     );
   }
-  users.push(new User(username));
+  users.push(new User(username)); // TODO should we move this logic into another file?
   return { success: true };
 };
 
@@ -105,21 +107,63 @@ export const getBalance = (
   }
 };
 
-// /**
-//  * Send an amount of a specific currency from a user to another
-//  * @param fromUsername The username of the user we want to send the amount from
-//  * @param toUsername The username of the user we want to send the amount to
-//  * @param amount The amount we want to send
-//  * @param currency The respective currency of the amount
-//  * @returns Ok, fromUsernameBalance and toUsernameBalance if it succeeds or a BankingError if not
-//  */
-// const send = (
-//   fromUsername: string,
-//   toUsername: string,
-//   amount: number,
-//   currency: string
-// ):
-//   | (Ok & { fromUsernameBalance: number; toUsernameBalance: number })
-//   | BankingError => {
-//   throw new Error('Method not implemented.');
-// };
+/**
+ * Send an amount of a specific currency from a user to another
+ * @param fromUsername The username of the user we want to send the amount from
+ * @param toUsername The username of the user we want to send the amount to
+ * @param amount The amount we want to send
+ * @param currency The respective currency of the amount
+ * @returns Ok, fromUsernameBalance and toUsernameBalance if it succeeds or a BankingError if not
+ */
+export const send = (
+  fromUsername: string,
+  toUsername: string,
+  amount: number,
+  currency: string
+):
+  | (Ok & { fromUsernameBalance: number; toUsernameBalance: number })
+  | BankingError => {
+  const fromUser = getUser(fromUsername);
+  const toUser = getUser(toUsername);
+  if (fromUser) {
+    // TODO this send is too complex, simplify it!
+    if (toUser) {
+      // Withdraw fromUser
+      const fromUserBalance = getUserBalance(fromUser, currency);
+      if (fromUserBalance && fromUserBalance.amount >= amount) {
+        fromUserBalance.amount -= amount;
+
+        // Deposit toUser
+        const toUserBalance = getUserBalance(toUser, currency);
+        if (toUserBalance) {
+          toUserBalance.amount += amount;
+
+          return {
+            success: true,
+            fromUsernameBalance: fromUserBalance.amount,
+            toUsernameBalance: toUserBalance.amount,
+          };
+        } else {
+          toUser.balances.push(new Balance(currency, amount));
+          return {
+            success: true,
+            fromUsernameBalance: fromUserBalance.amount,
+            toUsernameBalance: amount,
+          };
+        }
+      } else {
+        return notEnoughMoneyError(
+          `There isn't enough money in the user balance`
+        );
+      }
+    } else {
+      return receiverDoesNotExistError(
+        `The user with username ${toUsername} does not exist`
+      );
+    }
+  } else {
+    return senderDoesNotExistError(
+      `The user with username ${fromUsername} does not exist`
+    );
+  }
+};

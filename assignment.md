@@ -11,10 +11,10 @@ Test task for Node jS developers. Candidate should write a simple NPM package ba
 - [x] Code accuracy also matters. Readable, safe, refactorable code is a plus.
 
 ## Money amounts
-- [ ] Money amount of any currency should not be negative.
+- [x] Money amount of any currency should not be negative.
 - [ ] Application should provide 2 decimal precision of money amount for any currency.
-- [ ] Amount of money incoming to the system should be equal to amount of money inside the system + amount of withdraws (money should not appear or disappear accidentally).
-- [ ] User and currency type is any string. Case sensitive. New currencies / users can be added dynamically in runtime. In the application, there should be a special public function (described below) for creating users. Currencies should be created automatically (if needed).
+- [x] Amount of money incoming to the system should be equal to amount of money inside the system + amount of withdraws (money should not appear or disappear accidentally).
+- [x] User and currency type is any string. Case sensitive. New currencies / users can be added dynamically in runtime. In the application, there should be a special public function (described below) for creating users. Currencies should be created automatically (if needed).
 
 ## API reference
 Requirements for public functions provided by ExBanking package. Any function should return success result or error result. Success result is different for each function, error result is generic.
@@ -57,6 +57,6 @@ const getBalance = (username: string, currency: string): (Ok & { balance: number
 ```typescript
 const send = (fromUsername: string, toUsername: string, amount: number, currency: string): (Ok & { fromUsernameBalance: number, toUsernameBalance: number } | BankingError) => {};
 ```
-- [ ] Decreases fromUsername's balance in given currency by amount value
-- [ ] Increases toUsername's balance in given currency by amount value
-- [ ] Returns balance of fromUser and toUser in given format
+- [x] Decreases fromUsername's balance in given currency by amount value
+- [x] Increases toUsername's balance in given currency by amount value
+- [x] Returns balance of fromUser and toUser in given format

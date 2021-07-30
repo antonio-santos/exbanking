@@ -1,8 +1,14 @@
-import { NotEnoughMoney, UserAlreadyExists, UserDoesNotExist } from './types';
+import {
+  NotEnoughMoney,
+  ReceiverDoesNotExist,
+  SenderDoesNotExist,
+  UserAlreadyExists,
+  UserDoesNotExist,
+} from './types';
 
 export enum ErrorName {
-  WrongArguments,
-  UserAlreadyExists,
+  WrongArguments, // TODO Use this
+  UserAlreadyExists, // TODO Fix this warning
   UserDoesNotExist,
   NotEnoughMoney,
   SenderDoesNotExist,
@@ -28,4 +34,22 @@ export const notEnoughMoneyError = (message: string): NotEnoughMoney => {
     name: ErrorName.NotEnoughMoney,
     message: message,
   } as NotEnoughMoney;
+};
+
+export const senderDoesNotExistError = (
+  message: string
+): SenderDoesNotExist => {
+  return {
+    name: ErrorName.SenderDoesNotExist,
+    message: message,
+  } as SenderDoesNotExist;
+};
+
+export const receiverDoesNotExistError = (
+  message: string
+): ReceiverDoesNotExist => {
+  return {
+    name: ErrorName.ReceiverDoesNotExist,
+    message: message,
+  } as ReceiverDoesNotExist;
 };

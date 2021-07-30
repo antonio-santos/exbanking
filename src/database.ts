@@ -28,6 +28,7 @@ export const getUser = (username: string): User | undefined => {
   }
 };
 
+// TODO Do we need this get?
 export const getUserBalance = (
   user: User,
   currency: string
