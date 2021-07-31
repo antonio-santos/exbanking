@@ -6,13 +6,13 @@ Test task for Node jS developers. Candidate should write a simple NPM package ba
 - [x] Package name can be derived from ExBanking
 - [x] Package simply exports just an initializer of the ExBanking module (no API endpoint, no REST / SOAP API, no TCP / UDP sockets, no any external network interface).
 - [x] Application should not use any database / disc storage. All needed data should be stored only in application memory.
-- Candidate can use any Node library he/she wants to, the code itself should be written using Typescript and transpiled to Javascript.
+- [x] Candidate can use any Node library he/she wants to, the code itself should be written using Typescript and transpiled to Javascript.
 - [x] We expect unit tests.
 - [x] Code accuracy also matters. Readable, safe, refactorable code is a plus.
 
 ## Money amounts
 - [x] Money amount of any currency should not be negative.
-- [ ] Application should provide 2 decimal precision of money amount for any currency.
+- [x] Application should provide 2 decimal precision of money amount for any currency.
 - [x] Amount of money incoming to the system should be equal to amount of money inside the system + amount of withdraws (money should not appear or disappear accidentally).
 - [x] User and currency type is any string. Case sensitive. New currencies / users can be added dynamically in runtime. In the application, there should be a special public function (described below) for creating users. Currencies should be created automatically (if needed).
 

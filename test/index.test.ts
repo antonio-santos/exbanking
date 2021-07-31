@@ -54,6 +54,34 @@ describe('exbanking', () => {
       };
       expect(actual).toEqual<Ok & { newBalance: number }>(expected);
     });
+    it('should deposit 50.99 USD into antonio balance, and get a balance of 50.99', () => {
+      createUser('antonio');
+      const actual = deposit('antonio', 50.99, 'USD');
+      const expected: Ok & { newBalance: number } = {
+        success: true,
+        newBalance: 50.99,
+      };
+      expect(actual).toEqual<Ok & { newBalance: number }>(expected);
+    });
+    it('should deposit 50.001 USD into antonio balance, and get a balance of 50', () => {
+      createUser('antonio');
+      const actual = deposit('antonio', 50.001, 'USD');
+      const expected: Ok & { newBalance: number } = {
+        success: true,
+        newBalance: 50,
+      };
+      expect(actual).toEqual<Ok & { newBalance: number }>(expected);
+    });
+    it('should deposit 50 into antonio USD and usd balances (Case sensitive)', () => {
+      createUser('antonio');
+      deposit('antonio', 50, 'USD');
+      const actual = deposit('antonio', 50, 'usd');
+      const expected: Ok & { newBalance: number } = {
+        success: true,
+        newBalance: 50,
+      };
+      expect(actual).toEqual<Ok & { newBalance: number }>(expected);
+    });
     it('should deposit 50 USD into antonio balance twice and get a final ballance of 100', () => {
       createUser('antonio');
       deposit('antonio', 50, 'USD');
@@ -103,6 +131,26 @@ describe('exbanking', () => {
       };
       expect(actual).toEqual<Ok & { newBalance: number }>(expected);
     });
+    it('should withdraw 50.99 USD from antonio balance, and get a balance of 0', () => {
+      createUser('antonio');
+      deposit('antonio', 50.99, 'USD');
+      const actual = withdraw('antonio', 50.99, 'USD');
+      const expected: Ok & { newBalance: number } = {
+        success: true,
+        newBalance: 0,
+      };
+      expect(actual).toEqual<Ok & { newBalance: number }>(expected);
+    });
+    it('should withdraw 50 USD from antonio balance when calling with 50.001', () => {
+      createUser('antonio');
+      deposit('antonio', 50.001, 'USD');
+      const actual = withdraw('antonio', 50.001, 'USD');
+      const expected: Ok & { newBalance: number } = {
+        success: true,
+        newBalance: 0,
+      };
+      expect(actual).toEqual<Ok & { newBalance: number }>(expected);
+    });
   });
   describe('METHOD: getBalance', () => {
     it('should return UserDoesNotExist', () => {
@@ -125,6 +173,16 @@ describe('exbanking', () => {
     it('should return the balance of the user', () => {
       createUser('antonio');
       deposit('antonio', 50, 'USD');
+      const actual = getBalance('antonio', 'USD');
+      const expected: Ok & { balance: number } = {
+        success: true,
+        balance: 50,
+      };
+      expect(actual).toEqual<Ok & { balance: number }>(expected);
+    });
+    it('should return the balance of the user', () => {
+      createUser('antonio');
+      deposit('antonio', 50.001, 'USD');
       const actual = getBalance('antonio', 'USD');
       const expected: Ok & { balance: number } = {
         success: true,
@@ -195,6 +253,24 @@ describe('exbanking', () => {
       deposit('antonio', 50, 'USD');
       deposit('livia', 50, 'USD');
       const actual = send('antonio', 'livia', 50, 'USD');
+      const expected: Ok & {
+        fromUsernameBalance: number;
+        toUsernameBalance: number;
+      } = {
+        success: true,
+        fromUsernameBalance: 0,
+        toUsernameBalance: 100,
+      };
+      expect(actual).toEqual<
+        Ok & { fromUsernameBalance: number; toUsernameBalance: number }
+      >(expected);
+    });
+    it('should send 50 USD from antonio to livia when calling with 50.001, giving a final balance of 0 and 100 respectivly', () => {
+      createUser('antonio');
+      createUser('livia');
+      deposit('antonio', 50, 'USD');
+      deposit('livia', 50, 'USD');
+      const actual = send('antonio', 'livia', 50.001, 'USD');
       const expected: Ok & {
         fromUsernameBalance: number;
         toUsernameBalance: number;

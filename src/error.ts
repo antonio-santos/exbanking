@@ -8,7 +8,7 @@ import {
 
 export enum ErrorName {
   WrongArguments, // TODO Use this
-  UserAlreadyExists, // TODO Fix this warning
+  UserAlreadyExists, // TODO Fix this warnings
   UserDoesNotExist,
   NotEnoughMoney,
   SenderDoesNotExist,

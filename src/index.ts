@@ -1,3 +1,4 @@
+import { roundTo } from './currency';
 import { Balance, getUserBalance, getUser, User, users } from './database';
 import {
   notEnoughMoneyError,
@@ -35,6 +36,7 @@ export const deposit = (
   amount: number,
   currency: string
 ): (Ok & { newBalance: number }) | BankingError => {
+  amount = roundTo(amount, 2);
   const user = getUser(username);
   if (user) {
     const balance = getUserBalance(user, currency);
@@ -64,6 +66,7 @@ export const withdraw = (
   amount: number,
   currency: string
 ): (Ok & { newBalance: number }) | BankingError => {
+  amount = roundTo(amount, 2);
   const user = getUser(username);
   if (user) {
     const balance = getUserBalance(user, currency);
@@ -123,6 +126,7 @@ export const send = (
 ):
   | (Ok & { fromUsernameBalance: number; toUsernameBalance: number })
   | BankingError => {
+  amount = roundTo(amount, 2);
   const fromUser = getUser(fromUsername);
   const toUser = getUser(toUsername);
   if (fromUser) {
