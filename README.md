@@ -23,7 +23,7 @@ To run tests, use:
 npm test # or yarn test
 ```
 
-## Configuration
+## Configurations
 
 Code quality is set up with `prettier`, `husky`, and `lint-staged`. Adjust the respective fields in `package.json` accordingly.
 
@@ -39,11 +39,10 @@ Jest tests are set up to run with `npm test` or `yarn test`.
 
 ### GitHub Actions
 
-Two actions are added by default:
-
-- `main` which installs deps w/ cache, lints, tests, and builds on all pushes against a Node and OS matrix
-- `size` which comments cost comparison of your library on every pull request using [`size-limit`](https://github.com/ai/size-limit)
+- `main` installs deps w/ cache, lints, tests, and builds on all pushes against a Node and OS matrix
+- `size` comments cost comparison of the library on every pull request using [`size-limit`](https://github.com/ai/size-limit)
 
 ## Publishing to NPM
 
-We recommend using [np](https://github.com/sindresorhus/np).
+- [np](https://github.com/sindresorhus/np)
+- [semantic-release](https://github.com/semantic-release/semantic-release)

@@ -7,31 +7,31 @@ import {
 } from './types';
 
 export enum ErrorName {
-  WrongArguments, // TODO Use this
-  UserAlreadyExists, // TODO Fix this warnings
-  UserDoesNotExist,
-  NotEnoughMoney,
-  SenderDoesNotExist,
-  ReceiverDoesNotExist,
+  WrongArguments, // TODO Use this?
+  UserAlreadyExistsError,
+  UserDoesNotExistError,
+  NotEnoughMoneyError,
+  SenderDoesNotExistError,
+  ReceiverDoesNotExistError,
 }
 
 export const userAlreadyExistsError = (message: string): UserAlreadyExists => {
   return {
-    name: ErrorName.UserAlreadyExists,
+    name: ErrorName.UserAlreadyExistsError,
     message: message,
   } as UserAlreadyExists;
 };
 
 export const userDoesNotExistError = (message: string): UserDoesNotExist => {
   return {
-    name: ErrorName.UserDoesNotExist,
+    name: ErrorName.UserDoesNotExistError,
     message: message,
   } as UserDoesNotExist;
 };
 
 export const notEnoughMoneyError = (message: string): NotEnoughMoney => {
   return {
-    name: ErrorName.NotEnoughMoney,
+    name: ErrorName.NotEnoughMoneyError,
     message: message,
   } as NotEnoughMoney;
 };
@@ -40,7 +40,7 @@ export const senderDoesNotExistError = (
   message: string
 ): SenderDoesNotExist => {
   return {
-    name: ErrorName.SenderDoesNotExist,
+    name: ErrorName.SenderDoesNotExistError,
     message: message,
   } as SenderDoesNotExist;
 };
@@ -49,7 +49,7 @@ export const receiverDoesNotExistError = (
   message: string
 ): ReceiverDoesNotExist => {
   return {
-    name: ErrorName.ReceiverDoesNotExist,
+    name: ErrorName.ReceiverDoesNotExistError,
     message: message,
   } as ReceiverDoesNotExist;
 };

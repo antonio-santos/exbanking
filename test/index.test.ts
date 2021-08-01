@@ -30,7 +30,7 @@ describe('exbanking', () => {
       createUser('antonio');
       const actual = createUser('antonio');
       const expected: UserAlreadyExists = {
-        name: ErrorName.UserAlreadyExists,
+        name: ErrorName.UserAlreadyExistsError,
         message: 'The user with username antonio already exist',
       };
       expect(actual).toEqual<UserAlreadyExists>(expected);
@@ -40,7 +40,7 @@ describe('exbanking', () => {
     it('should return UserDoesNotExist', () => {
       const actual = deposit('antonio', 50, 'USD');
       const expected: UserDoesNotExist = {
-        name: ErrorName.UserDoesNotExist,
+        name: ErrorName.UserDoesNotExistError,
         message: 'The user with username antonio does not exist',
       };
       expect(actual).toEqual<UserDoesNotExist>(expected);
@@ -97,7 +97,7 @@ describe('exbanking', () => {
     it('should return UserDoesNotExist', () => {
       const actual = withdraw('antonio', 50, 'USD');
       const expected: UserDoesNotExist = {
-        name: ErrorName.UserDoesNotExist,
+        name: ErrorName.UserDoesNotExistError,
         message: 'The user with username antonio does not exist',
       };
       expect(actual).toEqual<UserDoesNotExist>(expected);
@@ -106,7 +106,7 @@ describe('exbanking', () => {
       createUser('antonio');
       const actual = withdraw('antonio', 50, 'USD');
       const expected: NotEnoughMoney = {
-        name: ErrorName.NotEnoughMoney,
+        name: ErrorName.NotEnoughMoneyError,
         message: `There isn't enough money in the user balance`,
       };
       expect(actual).toEqual<NotEnoughMoney>(expected);
@@ -116,7 +116,7 @@ describe('exbanking', () => {
       deposit('antonio', 10, 'USD');
       const actual = withdraw('antonio', 50, 'USD');
       const expected: NotEnoughMoney = {
-        name: ErrorName.NotEnoughMoney,
+        name: ErrorName.NotEnoughMoneyError,
         message: `There isn't enough money in the user balance`,
       };
       expect(actual).toEqual<NotEnoughMoney>(expected);
@@ -156,7 +156,7 @@ describe('exbanking', () => {
     it('should return UserDoesNotExist', () => {
       const actual = getBalance('antonio', 'USD');
       const expected: UserDoesNotExist = {
-        name: ErrorName.UserDoesNotExist,
+        name: ErrorName.UserDoesNotExistError,
         message: 'The user with username antonio does not exist',
       };
       expect(actual).toEqual<UserDoesNotExist>(expected);
@@ -195,7 +195,7 @@ describe('exbanking', () => {
     it('should return SenderDoesNotExist', () => {
       const actual = send('antonio', 'livia', 50, 'USD');
       const expected: SenderDoesNotExist = {
-        name: ErrorName.SenderDoesNotExist,
+        name: ErrorName.SenderDoesNotExistError,
         message: 'The user with username antonio does not exist',
       };
       expect(actual).toEqual<SenderDoesNotExist>(expected);
@@ -204,7 +204,7 @@ describe('exbanking', () => {
       createUser('antonio');
       const actual = send('antonio', 'livia', 50, 'USD');
       const expected: ReceiverDoesNotExist = {
-        name: ErrorName.ReceiverDoesNotExist,
+        name: ErrorName.ReceiverDoesNotExistError,
         message: 'The user with username livia does not exist',
       };
       expect(actual).toEqual<ReceiverDoesNotExist>(expected);
@@ -214,7 +214,7 @@ describe('exbanking', () => {
       createUser('livia');
       const actual = send('antonio', 'livia', 50, 'USD');
       const expected: NotEnoughMoney = {
-        name: ErrorName.NotEnoughMoney,
+        name: ErrorName.NotEnoughMoneyError,
         message: `There isn't enough money in the user balance`,
       };
       expect(actual).toEqual<NotEnoughMoney>(expected);
@@ -225,7 +225,7 @@ describe('exbanking', () => {
       deposit('antonio', 10, 'USD');
       const actual = send('antonio', 'livia', 50, 'USD');
       const expected: NotEnoughMoney = {
-        name: ErrorName.NotEnoughMoney,
+        name: ErrorName.NotEnoughMoneyError,
         message: `There isn't enough money in the user balance`,
       };
       expect(actual).toEqual<NotEnoughMoney>(expected);

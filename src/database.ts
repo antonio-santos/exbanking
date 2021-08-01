@@ -1,45 +1,34 @@
-export class Balance {
-  currency: string;
-  amount: number;
+import { Balance, Account } from './models/account';
 
-  constructor(currency: string, amount: number) {
-    this.currency = currency;
-    this.amount = amount;
-  }
-}
-
-export class User {
-  username: string;
-  balances: Balance[];
-
-  constructor(username: string) {
-    this.username = username;
-    this.balances = [];
-  }
-}
-
-export let users: User[] = [];
-
-export const getUser = (username: string): User | undefined => {
-  if (users.length > 0) {
-    return users.find(element => element.username === username);
-  } else {
-    return undefined;
-  }
-};
-
-// TODO Do we need this get?
-export const getUserBalance = (
-  user: User,
-  currency: string
-): Balance | undefined => {
-  if (user.balances.length > 0) {
-    return user.balances.find(element => element.currency === currency);
-  } else {
-    return undefined;
-  }
-};
+let accounts: Account[] = [];
 
 export const resetDatabase = () => {
-  users = [];
+  accounts = [];
+};
+
+export const insertAccount = (username: string) => {
+  accounts.push(new Account(username));
+};
+
+export const getAccount = (username: string): Account | undefined => {
+  return accounts.find(element => element.username === username);
+};
+
+export const insertAccountBalance = (
+  account: Account,
+  currency: string,
+  amount: number
+) => {
+  account.balances.push(new Balance(currency, amount));
+};
+
+export const getAccountBalance = (
+  account: Account,
+  currency: string
+): Balance | undefined => {
+  return account.balances.find(element => element.currency === currency);
+};
+
+export const updateBalance = (balance: Balance, newAmount: number) => {
+  balance.amount = newAmount;
 };

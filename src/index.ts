@@ -1,12 +1,4 @@
-import { roundTo } from './currency';
-import { Balance, getUserBalance, getUser, User, users } from './database';
-import {
-  notEnoughMoneyError,
-  receiverDoesNotExistError,
-  senderDoesNotExistError,
-  userAlreadyExistsError,
-  userDoesNotExistError,
-} from './error';
+import { AccountService } from './services/account.service';
 import { BankingError, Ok } from './types';
 
 /**
@@ -15,13 +7,7 @@ import { BankingError, Ok } from './types';
  * @returns Ok if it succeeds or a BankingError if not
  */
 export const createUser = (username: string): Ok | BankingError => {
-  if (getUser(username)) {
-    return userAlreadyExistsError(
-      `The user with username ${username} already exist`
-    );
-  }
-  users.push(new User(username)); // TODO should we move this logic into another file?
-  return { success: true };
+  return AccountService.createAccount(username);
 };
 
 /**
@@ -36,22 +22,7 @@ export const deposit = (
   amount: number,
   currency: string
 ): (Ok & { newBalance: number }) | BankingError => {
-  amount = roundTo(amount, 2);
-  const user = getUser(username);
-  if (user) {
-    const balance = getUserBalance(user, currency);
-    if (balance) {
-      balance.amount += amount;
-      return { success: true, newBalance: balance.amount };
-    } else {
-      user.balances.push(new Balance(currency, amount));
-      return { success: true, newBalance: amount };
-    }
-  } else {
-    return userDoesNotExistError(
-      `The user with username ${username} does not exist`
-    );
-  }
+  return AccountService.deposit(username, amount, currency);
 };
 
 /**
@@ -66,23 +37,7 @@ export const withdraw = (
   amount: number,
   currency: string
 ): (Ok & { newBalance: number }) | BankingError => {
-  amount = roundTo(amount, 2);
-  const user = getUser(username);
-  if (user) {
-    const balance = getUserBalance(user, currency);
-    if (balance && balance.amount >= amount) {
-      balance.amount -= amount;
-      return { success: true, newBalance: balance.amount };
-    } else {
-      return notEnoughMoneyError(
-        `There isn't enough money in the user balance`
-      );
-    }
-  } else {
-    return userDoesNotExistError(
-      `The user with username ${username} does not exist`
-    );
-  }
+  return AccountService.withdraw(username, amount, currency);
 };
 
 /**
@@ -95,19 +50,7 @@ export const getBalance = (
   username: string,
   currency: string
 ): (Ok & { balance: number }) | BankingError => {
-  const user = getUser(username);
-  if (user) {
-    const balance = getUserBalance(user, currency);
-    if (balance) {
-      return { success: true, balance: balance.amount };
-    } else {
-      return { success: true, balance: 0 };
-    }
-  } else {
-    return userDoesNotExistError(
-      `The user with username ${username} does not exist`
-    );
-  }
+  return AccountService.getBalance(username, currency);
 };
 
 /**
@@ -126,48 +69,5 @@ export const send = (
 ):
   | (Ok & { fromUsernameBalance: number; toUsernameBalance: number })
   | BankingError => {
-  amount = roundTo(amount, 2);
-  const fromUser = getUser(fromUsername);
-  const toUser = getUser(toUsername);
-  if (fromUser) {
-    // TODO this send is too complex, simplify it!
-    if (toUser) {
-      // Withdraw fromUser
-      const fromUserBalance = getUserBalance(fromUser, currency);
-      if (fromUserBalance && fromUserBalance.amount >= amount) {
-        fromUserBalance.amount -= amount;
-
-        // Deposit toUser
-        const toUserBalance = getUserBalance(toUser, currency);
-        if (toUserBalance) {
-          toUserBalance.amount += amount;
-
-          return {
-            success: true,
-            fromUsernameBalance: fromUserBalance.amount,
-            toUsernameBalance: toUserBalance.amount,
-          };
-        } else {
-          toUser.balances.push(new Balance(currency, amount));
-          return {
-            success: true,
-            fromUsernameBalance: fromUserBalance.amount,
-            toUsernameBalance: amount,
-          };
-        }
-      } else {
-        return notEnoughMoneyError(
-          `There isn't enough money in the user balance`
-        );
-      }
-    } else {
-      return receiverDoesNotExistError(
-        `The user with username ${toUsername} does not exist`
-      );
-    }
-  } else {
-    return senderDoesNotExistError(
-      `The user with username ${fromUsername} does not exist`
-    );
-  }
+  return AccountService.send(fromUsername, toUsername, amount, currency);
 };
