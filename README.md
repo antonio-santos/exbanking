@@ -47,5 +47,4 @@ Jest tests are set up to run with `npm test` or `yarn test`.
 
 ## Publishing to NPM
 
-- [np](https://github.com/sindresorhus/np)
 - [semantic-release](https://github.com/semantic-release/semantic-release)
